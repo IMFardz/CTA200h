@@ -1,0 +1,96 @@
+\documentclass{article}
+
+\usepackage[margin=1in]{geometry} 
+\usepackage{amsmath,amsthm,amssymb,enumitem}
+\usepackage{graphicx}
+\graphicspath{ {./Images/} }
+
+\newcommand{\R}{\mathbb{R}}  
+\newcommand{\Z}{\mathbb{Z}}
+\newcommand{\N}{\mathbb{N}}
+\newcommand{\Q}{\mathbb{Q}}
+\newcommand{\C}{\mathbb{C}}
+
+\newenvironment{theorem}[2][Theorem]{\begin{trivlist}
+\item[\hskip \labelsep {\bfseries #1}\hskip \labelsep {\bfseries #2.}]}{\end{trivlist}}
+\newenvironment{lemma}[2][Lemma]{\begin{trivlist}
+\item[\hskip \labelsep {\bfseries #1}\hskip \labelsep {\bfseries #2.}]}{\end{trivlist}}
+\newenvironment{exercise}[2][Exercise]{\begin{trivlist}
+\item[\hskip \labelsep {\bfseries #1}\hskip \labelsep {\bfseries #2.}]}{\end{trivlist}}
+\newenvironment{problem}[2][Problem]{\begin{trivlist}
+\item[\hskip \labelsep {\bfseries #1}\hskip \labelsep {\bfseries #2.}]}{\end{trivlist}}
+\newenvironment{question}[2][Question]{\begin{trivlist}
+\item[\hskip \labelsep {\bfseries #1}\hskip \labelsep {\bfseries #2.}]}{\end{trivlist}}
+\newenvironment{corollary}[2][Corollary]{\begin{trivlist}
+\item[\hskip \labelsep {\bfseries #1}\hskip \labelsep {\bfseries #2.}]}{\end{trivlist}}
+
+\newenvironment{solution}{\begin{proof}[Solution]}{\end{proof}}
+
+\makeatletter
+\renewcommand*\env@matrix[1][*\c@MaxMatrixCols c]{%
+  \hskip -\arraycolsep
+  \let\@ifnextchar\new@ifnextchar
+  \array{#1}}
+\makeatother
+
+\begin{document}
+
+\title{CTA200h Project }
+\author{Fardin Syed}
+
+\maketitle
+\noindent {\large \bf My Project}
+\\
+For my project, I will be comparing the Dynamic Spectrum of pulsar B0834+06 to search for a differential scintillation of this star's scintillation pattern between the satellites Arecibo and Green Bank. 
+\\
+\\
+{\large \bf Background Theory}
+\\
+Between the pulsar B0834+06 and Earth, this exists an interstellar medium which creates multiple images of the pulsar. These images lead to a clearly distinguishable scintillation pattern of the images as a result of the interference of these images.  As the pulsar/screen move, the scintillation pattern also moves. By observing the scintillation pattern between two different telescopes (Arecibo and Greenbank), not only can we observe the differences in the scintillation pattern but we can also calculate the time delay between the pattern (ie. how much time one must wait for the pattern at one telescope to align with the pattern that was at the other). 
+\\
+\\
+The first part of my project involved just reading in the data. The attached jupyter notebook contains the script for doing so. However, note that one must be logged onto a CITA machine as otherwise it will be unable to find the file.
+\\
+The below images show dynamic spectrum for Arecibo and Greenbank respectively. Note that the data has already been cleaned to some extent, however I further cleaned the data by dividing the average magnitude along each frequency. This is because as the signal was being processed, it was split up between four stations, where each station analyze a specific bandwidth interval. As a result of spectral leakages, there were bands of frequency which were far less intense than others. Averaging along the intensity helped to reduce these disparities. 
+\begin{figure}[h]
+\includegraphics[scale = 0.5]{Arebico_Dynamic_0834}
+\includegraphics[scale = 0.5]{Greenbelt_Dynamic_0834}
+\centering
+\caption{Dynamic spectrum for B0834+06}
+\end{figure}
+\\
+Note that for each time and frequency, there was a complex value which contained information about the phase and the intensity of the wave. The plots above contain only information regarding the intensity of the spectrums.
+\\
+\\
+The next part of my project involved plotting the cross secondary spectrum. To do this, I first applied a 2D fast fourier transform to each dynamic spectrum, and then multiplied the first spectrum with the complex conjugate of the second. Similarly to the dynamic spectrum, values in the secondary spectrum were complex values, which contains information regarding the contribution of the wave and its phase. 
+\begin{figure}[h]
+\includegraphics[scale = 0.5]{Secondary7_0834}
+\includegraphics[scale = 0.5]{Secondary8_0834}
+\centering
+\caption{Cross Secondary Spectrum. The first is log10 of the absolute value for each point, while the second is the phase of each point.}
+\centering
+\end{figure}
+\\
+In particular, by multiplying the two plots together, the phase for each value, $\phi$ directly corresponds to the baseline term. That is, $\phi = \frac{2 \pi}{\lambda} \cdot b \cdot \Delta \theta_{\textrm{scattering}}$. Note that our baseline term is constant, as I believe it represents the distance between our two telescopes. Since the doppler frequency should also be proportional to $\theta_{\textrm{scattering}}$, we should find that our phase should be proportional to our doppler frequency. For each doppler frequency, I averages the complex values and then took the phase and plotted it (rather than averaging the phase directly). The plot I obtained is shown below. 
+\begin{figure}[h]
+\includegraphics[scale = 0.5]{Doppler_Phase3}
+\centering
+\caption{Doppler frequency vs. Average Phase}
+\centering
+\end{figure}
+The slope I calculated was $-72.75 s$, (lets ignore uncertainties for now), which was within error of Dana's estimate of $73 s$. The actual time-delay between the two satellites should be this slope divided by $2 \pi$. Hence, I find that the time delay of the scintillation pattern between these two satellites should
+$$
+\frac{-72.75}{2 \pi} s \approx -11 s
+$$
+The Jupyter Notebook I submitted before essentially just computes all of these figures. 
+\\
+\\
+I estimated the slope and its error by taking the mean of the array created by divided the phase values by the frequency. The uncertainty I took by approximating the fluctuations in this graph.
+\begin{figure}[h]
+\includegraphics[scale = 0.5]{slope}
+\centering
+\end{figure}
+Here, I estimated the slope to be abbout -$72.5 \pm 5 s$.  
+
+
+\end{document}
